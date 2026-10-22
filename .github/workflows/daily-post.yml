@@ -1,0 +1,62 @@
+name: Daily post
+
+on:
+  schedule:
+    - cron: "30 2 * * *" # every day at 02:30 UTC (08:00 IST)
+  workflow_dispatch:
+    inputs:
+      category:
+        description: "Category slug (optional), e.g. scholarships"
+        required: false
+      topic:
+        description: "Topic idea (optional)"
+        required: false
+      force:
+        description: "Publish even if today's post exists"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-post
+  cancel-in-progress: false
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm install --no-audit --no-fund
+
+      - name: Generate today's post
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CATEGORY: ${{ inputs.category }}
+          TOPIC: ${{ inputs.topic }}
+          FORCE: ${{ inputs.force && '1' || '' }}
+        run: node scripts/generate-post.mjs
+
+      - name: Check the site still builds
+        run: npm run build
+
+      - name: Commit and push
+        run: |
+          git config user.name "universianity-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add src/content/blog public/images/posts
+          if git diff --cached --quiet; then
+            echo "No new post."
+          else
+            git commit -m "New post: $(date -u +%F)"
+            git push
+          fi
