@@ -1,0 +1,25 @@
+---
+import Page from "../layouts/Page.astro";
+import { SITE } from "../site.config.mjs";
+---
+<Page title="Privacy policy" description="How Universianity handles your data.">
+  <p><em>Last updated: October 2026. Have this reviewed for your country's laws before relying on it.</em></p>
+  <h2>What we collect</h2>
+  <p>
+    We do not require an account. If you subscribe to our newsletter we store your email address with our email
+    provider solely to send you the newsletter; you can unsubscribe at any time.
+  </p>
+  <h2>Cookies and advertising</h2>
+  <p>
+    Third-party vendors, including Google, use cookies to serve ads based on your prior visits to this and other
+    websites. Google's use of advertising cookies enables it and its partners to serve ads based on your visits.
+    You can opt out of personalised advertising at
+    <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener">Google Ads Settings</a>.
+  </p>
+  <h2>Analytics</h2>
+  <p>We may use privacy-friendly analytics to count page views. These do not identify you personally.</p>
+  <h2>Affiliate links</h2>
+  <p>Some links may be affiliate links. If you buy through them we may earn a commission at no extra cost to you.</p>
+  <h2>Contact</h2>
+  <p>Privacy questions: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+</Page>

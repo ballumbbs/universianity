@@ -1,0 +1,26 @@
+---
+import type { GetStaticPaths } from "astro";
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+import { getPosts } from "../../lib/posts";
+
+export const getStaticPaths = (async ({ paginate }) => {
+  return paginate(await getPosts(), { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+<Base title={page.currentPage > 1 ? `Articles — page ${page.currentPage}` : "All articles"}>
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow">Archive</div>
+      <h1>All articles</h1>
+      <p>{page.total} guides and counting — new one every day.</p>
+    </section>
+    <div class="grid">{page.data.map((post) => <PostCard post={post} />)}</div>
+    <nav class="pagination">
+      {page.url.prev ? <a class="btn" href={page.url.prev}>← Newer</a> : <span />}
+      {page.url.next ? <a class="btn" href={page.url.next}>Older →</a> : <span />}
+    </nav>
+  </div>
+</Base>

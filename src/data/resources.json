@@ -1,0 +1,60 @@
+[
+  {
+    "group": "Applications & Admissions",
+    "links": [
+      { "title": "Common App", "url": "https://www.commonapp.org/", "note": "Apply to 1,000+ US colleges with one application." },
+      { "title": "UCAS", "url": "https://www.ucas.com/", "note": "Undergraduate applications to UK universities." },
+      { "title": "College Board — SAT", "url": "https://satsuite.collegeboard.org/", "note": "SAT registration, dates and free practice." },
+      { "title": "ETS — TOEFL & GRE", "url": "https://www.ets.org/", "note": "English-language and graduate admissions tests." },
+      { "title": "IELTS", "url": "https://ielts.org/", "note": "Official IELTS test information and booking." }
+    ]
+  },
+  {
+    "group": "Scholarships & Financial Aid",
+    "links": [
+      { "title": "Federal Student Aid (FAFSA)", "url": "https://studentaid.gov/", "note": "US federal grants, loans and the FAFSA." },
+      { "title": "Fulbright Program", "url": "https://fulbrightprogram.org/", "note": "International exchange scholarships." },
+      { "title": "Chevening Scholarships", "url": "https://www.chevening.org/", "note": "UK government master's scholarships." },
+      { "title": "DAAD", "url": "https://www.daad.de/en/", "note": "Scholarships and study in Germany." },
+      { "title": "Erasmus+", "url": "https://erasmus-plus.ec.europa.eu/", "note": "EU programme for study, training and exchange." },
+      { "title": "Commonwealth Scholarships", "url": "https://cscuk.fcdo.gov.uk/", "note": "Scholarships for Commonwealth citizens." }
+    ]
+  },
+  {
+    "group": "Free Learning",
+    "links": [
+      { "title": "Khan Academy", "url": "https://www.khanacademy.org/", "note": "Free courses from maths to economics." },
+      { "title": "MIT OpenCourseWare", "url": "https://ocw.mit.edu/", "note": "Free lecture notes and videos from MIT." },
+      { "title": "Coursera", "url": "https://www.coursera.org/", "note": "University courses; many free to audit." },
+      { "title": "edX", "url": "https://www.edx.org/", "note": "Courses from Harvard, MIT and more." },
+      { "title": "freeCodeCamp", "url": "https://www.freecodecamp.org/", "note": "Learn to code for free with certifications." }
+    ]
+  },
+  {
+    "group": "Research & Writing",
+    "links": [
+      { "title": "Google Scholar", "url": "https://scholar.google.com/", "note": "Search academic papers and citations." },
+      { "title": "Zotero", "url": "https://www.zotero.org/", "note": "Free reference manager." },
+      { "title": "Purdue OWL", "url": "https://owl.purdue.edu/", "note": "Citation styles and academic writing help." },
+      { "title": "arXiv", "url": "https://arxiv.org/", "note": "Open-access preprints in science and maths." }
+    ]
+  },
+  {
+    "group": "Careers & Internships",
+    "links": [
+      { "title": "LinkedIn Jobs", "url": "https://www.linkedin.com/jobs/", "note": "Internships and graduate roles." },
+      { "title": "Handshake", "url": "https://joinhandshake.com/", "note": "Student and graduate job network." },
+      { "title": "Indeed", "url": "https://www.indeed.com/", "note": "Job search across countries." },
+      { "title": "O*NET OnLine", "url": "https://www.onetonline.org/", "note": "Explore careers, skills and salaries." }
+    ]
+  },
+  {
+    "group": "Study Abroad",
+    "links": [
+      { "title": "Study in the USA — EducationUSA", "url": "https://educationusa.state.gov/", "note": "Official US advising network." },
+      { "title": "Study UK", "url": "https://study-uk.britishcouncil.org/", "note": "British Council guide to studying in the UK." },
+      { "title": "Study in Canada", "url": "https://www.educanada.ca/", "note": "Official guide to studying in Canada." },
+      { "title": "Study in Australia", "url": "https://www.studyaustralia.gov.au/", "note": "Australian government study portal." }
+    ]
+  }
+]

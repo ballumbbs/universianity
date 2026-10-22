@@ -1,0 +1,30 @@
+---
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+import { getPosts } from "../../lib/posts";
+import { CATEGORIES } from "../../site.config.mjs";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return CATEGORIES.map((cat) => ({
+    params: { category: cat.slug },
+    props: { cat, posts: posts.filter((p) => p.data.category === cat.slug) },
+  }));
+}
+
+const { cat, posts } = Astro.props;
+---
+<Base title={cat.name} description={cat.blurb}>
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow">Topic</div>
+      <h1>{cat.name}</h1>
+      <p>{cat.blurb}</p>
+    </section>
+    {posts.length ? (
+      <div class="grid">{posts.map((post) => <PostCard post={post} />)}</div>
+    ) : (
+      <p class="muted">New guides on this topic are on the way.</p>
+    )}
+  </div>
+</Base>

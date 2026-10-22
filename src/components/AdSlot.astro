@@ -1,0 +1,19 @@
+---
+import { SITE } from "../site.config.mjs";
+// Renders nothing until an AdSense publisher id is set in site.config.mjs.
+interface Props { slot?: string }
+const { slot = "" } = Astro.props;
+---
+{SITE.adsenseClient && (
+  <div class="ad-slot">
+    <ins
+      class="adsbygoogle"
+      style="display:block"
+      data-ad-client={SITE.adsenseClient}
+      data-ad-slot={slot}
+      data-ad-format="auto"
+      data-full-width-responsive="true"
+    ></ins>
+    <script is:inline>(window.adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+)}

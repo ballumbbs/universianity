@@ -1,0 +1,49 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base title="Search" description="Search every Universianity guide.">
+  <div class="narrow">
+    <section class="hero">
+      <h1>Search</h1>
+      <input type="search" id="q" placeholder="Try “scholarships in Germany” or “internship CV”" aria-label="Search articles" autofocus />
+    </section>
+    <p class="muted" id="status"></p>
+    <ul id="results" style="list-style:none;padding:0"></ul>
+  </div>
+
+  <script is:inline>
+    const input = document.getElementById("q");
+    const list = document.getElementById("results");
+    const status = document.getElementById("status");
+    let index = [];
+
+    const esc = (s) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+
+    function run() {
+      const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      const url = new URL(location.href);
+      if (terms.length) url.searchParams.set("q", input.value); else url.searchParams.delete("q");
+      history.replaceState(null, "", url);
+      if (!terms.length) { list.innerHTML = ""; status.textContent = ""; return; }
+      const hits = index
+        .map((p) => {
+          const hay = (p.title + " " + p.description + " " + p.tags.join(" ") + " " + p.category).toLowerCase();
+          const score = terms.reduce((s, t) => s + (hay.includes(t) ? (p.title.toLowerCase().includes(t) ? 3 : 1) : 0), 0);
+          return { p, score, all: terms.every((t) => hay.includes(t)) };
+        })
+        .filter((x) => x.all)
+        .sort((a, b) => b.score - a.score);
+      status.textContent = `${hits.length} result${hits.length === 1 ? "" : "s"}`;
+      list.innerHTML = hits
+        .map(({ p }) => `<li class="box" style="margin:12px 0"><a href="${p.url}"><strong>${esc(p.title)}</strong></a><br><span class="muted">${esc(p.description)}</span><div class="meta">${p.date}</div></li>`)
+        .join("");
+    }
+
+    fetch("/search.json").then((r) => r.json()).then((data) => {
+      index = data;
+      input.value = new URL(location.href).searchParams.get("q") || "";
+      run();
+    });
+    input.addEventListener("input", run);
+  </script>
+</Base>

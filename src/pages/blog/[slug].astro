@@ -1,0 +1,87 @@
+---
+import { render } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import PostCard from "../../components/PostCard.astro";
+import AdSlot from "../../components/AdSlot.astro";
+import { getPosts, formatDate, readingTime, relatedPosts, type Post } from "../../lib/posts";
+import { SITE, categoryBySlug } from "../../site.config.mjs";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post, posts } }));
+}
+
+interface Props { post: Post; posts: Post[] }
+const { post, posts } = Astro.props;
+const { Content } = await render(post);
+const cat = categoryBySlug(post.data.category);
+const related = relatedPosts(post, posts);
+const url = new URL(`/blog/${post.id}/`, Astro.site).toString();
+const enc = encodeURIComponent;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  image: new URL(post.data.image, Astro.site).toString(),
+  datePublished: post.data.pubDate.toISOString(),
+  author: { "@type": "Organization", name: SITE.name },
+  publisher: { "@type": "Organization", name: SITE.name, url: SITE.url },
+  mainEntityOfPage: url,
+};
+---
+<Base title={post.data.title} description={post.data.description} image={post.data.image} type="article" jsonLd={jsonLd}>
+  <article class="narrow">
+    <header class="article-header">
+      {cat && <a class="pill" href={`/category/${cat.slug}/`}>{cat.name}</a>}
+      <h1>{post.data.title}</h1>
+      <p class="lead">{post.data.description}</p>
+      <div class="meta">
+        <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+        <span>· {readingTime(post.body ?? "")} min read</span>
+      </div>
+    </header>
+    <img class="cover" src={post.data.image} alt={post.data.imageAlt || post.data.title} width="1200" height="675" />
+
+    <div class="prose"><Content /></div>
+
+    <AdSlot />
+
+    {post.data.links.length > 0 && (
+      <aside class="box">
+        <h2>Useful links</h2>
+        <ul>
+          {post.data.links.map((l) => (
+            <li>
+              <a href={l.url} target="_blank" rel="noopener">{l.title}</a>
+              {l.note && <small>{l.note}</small>}
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
+
+    {post.data.tags.length > 0 && (
+      <div class="tags">{post.data.tags.map((t) => <span class="pill">#{t}</span>)}</div>
+    )}
+
+    <div class="share">
+      <a href={`https://wa.me/?text=${enc(post.data.title + " " + url)}`} target="_blank" rel="noopener">WhatsApp</a>
+      <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${enc(url)}`} target="_blank" rel="noopener">LinkedIn</a>
+      <a href={`https://x.com/intent/post?url=${enc(url)}&text=${enc(post.data.title)}`} target="_blank" rel="noopener">X</a>
+      <a href={`https://www.facebook.com/sharer/sharer.php?u=${enc(url)}`} target="_blank" rel="noopener">Facebook</a>
+    </div>
+
+    <p class="muted" style="font-size:0.85rem">
+      This guide was researched and drafted with AI assistance and reviewed against official sources linked above.
+      Deadlines and amounts change — always confirm on the official website.
+    </p>
+  </article>
+
+  {related.length > 0 && (
+    <section class="container section">
+      <div class="section-head"><h2>Keep reading</h2></div>
+      <div class="grid">{related.map((p) => <PostCard post={p} />)}</div>
+    </section>
+  )}
+</Base>

@@ -1,0 +1,124 @@
+---
+import "../styles/global.css";
+import { SITE, CATEGORIES } from "../site.config.mjs";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: "website" | "article";
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description = SITE.description, image = "/og-default.svg", type = "website", jsonLd } = Astro.props;
+const fullTitle = title ? `${title} | ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+const path = Astro.url.pathname;
+const nav = [
+  { href: "/blog/", label: "Articles" },
+  { href: "/resources/", label: "Resources" },
+  { href: "/search/", label: "Search" },
+  { href: "/about/", label: "About" },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE.name} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Serif+4:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    {SITE.adsenseClient && (
+      <script
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${SITE.adsenseClient}`}
+        crossorigin="anonymous"
+      ></script>
+    )}
+    <script is:inline>
+      try {
+        const saved = localStorage.getItem("theme");
+        const dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container bar">
+        <a class="logo" href="/">Universi<span>anity</span></a>
+        <button class="icon-btn menu-btn" id="menu-btn" aria-label="Open menu">☰</button>
+        <nav class="nav" id="nav">
+          {nav.map((n) => (
+            <a href={n.href} aria-current={path.startsWith(n.href) ? "page" : undefined}>{n.label}</a>
+          ))}
+          <button class="icon-btn" id="theme-btn" aria-label="Toggle dark mode">◐</button>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <a class="logo" href="/">Universi<span>anity</span></a>
+          <p>{SITE.description}</p>
+          {SITE.newsletterAction ? (
+            <form class="newsletter" action={SITE.newsletterAction} method="post" target="_blank">
+              <input type="email" name="email" placeholder="Your email" required aria-label="Email" />
+              <button class="btn primary" type="submit">Get the weekly digest</button>
+            </form>
+          ) : null}
+        </div>
+        <div>
+          <h4>Topics</h4>
+          <ul>{CATEGORIES.map((c) => <li><a href={`/category/${c.slug}/`}>{c.name}</a></li>)}</ul>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/privacy/">Privacy policy</a></li>
+            <li><a href="/disclaimer/">Disclaimer</a></li>
+            <li><a href="/rss.xml">RSS feed</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="container" style="margin-top:24px">© {new Date().getFullYear()} {SITE.name}. All rights reserved.</div>
+    </footer>
+
+    <script is:inline>
+      document.getElementById("theme-btn").addEventListener("click", () => {
+        const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        try { localStorage.setItem("theme", next); } catch {}
+      });
+      document.getElementById("menu-btn").addEventListener("click", () => {
+        document.getElementById("nav").classList.toggle("open");
+      });
+    </script>
+  </body>
+</html>

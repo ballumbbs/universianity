@@ -1,0 +1,23 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { categoryBySlug } from "../site.config.mjs";
+import { formatDate, readingTime } from "../lib/posts";
+
+interface Props { post: CollectionEntry<"blog"> }
+const { post } = Astro.props;
+const cat = categoryBySlug(post.data.category);
+---
+<article class="card">
+  <a href={`/blog/${post.id}/`}>
+    <img src={post.data.image} alt={post.data.imageAlt || post.data.title} loading="lazy" width="1200" height="675" />
+  </a>
+  <div class="body">
+    {cat && <a class="pill" href={`/category/${cat.slug}/`}>{cat.name}</a>}
+    <h3><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+    <p>{post.data.description}</p>
+    <div class="meta">
+      <time datetime={post.data.pubDate.toISOString()}>{formatDate(post.data.pubDate)}</time>
+      <span>· {readingTime(post.body ?? "")} min read</span>
+    </div>
+  </div>
+</article>

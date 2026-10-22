@@ -1,0 +1,9 @@
+---
+import Page from "../layouts/Page.astro";
+import { SITE } from "../site.config.mjs";
+---
+<Page title="Contact" description="Get in touch with Universianity.">
+  <p>Questions, corrections, partnership or advertising enquiries — we'd love to hear from you.</p>
+  <p>Email: <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+  <p>We usually reply within two working days.</p>
+</Page>

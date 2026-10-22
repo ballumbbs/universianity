@@ -1,0 +1,27 @@
+---
+import Base from "../layouts/Base.astro";
+import AdSlot from "../components/AdSlot.astro";
+import resources from "../data/resources.json";
+---
+<Base title="Student resource library" description="Hand-picked official links for admissions, scholarships, free courses, research, careers and study abroad.">
+  <div class="container">
+    <section class="hero">
+      <div class="eyebrow">Resource library</div>
+      <h1>The most useful links for students</h1>
+      <p>Official, trustworthy websites only — bookmark this page.</p>
+    </section>
+    {resources.map((group, i) => (
+      <>
+        <section class="box">
+          <h2>{group.group}</h2>
+          <ul>
+            {group.links.map((l) => (
+              <li><a href={l.url} target="_blank" rel="noopener">{l.title}</a><small>{l.note}</small></li>
+            ))}
+          </ul>
+        </section>
+        {i === 1 && <AdSlot />}
+      </>
+    ))}
+  </div>
+</Base>

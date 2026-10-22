@@ -1,0 +1,72 @@
+---
+import Base from "../layouts/Base.astro";
+import PostCard from "../components/PostCard.astro";
+import AdSlot from "../components/AdSlot.astro";
+import { getPosts, formatDate } from "../lib/posts";
+import { SITE, CATEGORIES, categoryBySlug } from "../site.config.mjs";
+
+const posts = await getPosts();
+const [featured, ...rest] = posts;
+const latest = rest.slice(0, 9);
+const featuredCat = featured && categoryBySlug(featured.data.category);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: SITE.name,
+  url: SITE.url,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${SITE.url}/search/?q={query}`,
+    "query-input": "required name=query",
+  },
+};
+---
+<Base jsonLd={jsonLd}>
+  <section class="hero container">
+    <div class="eyebrow">A new guide every day</div>
+    <h1>{SITE.tagline}</h1>
+    <p>{SITE.description}</p>
+  </section>
+
+  <div class="container">
+    {featured && (
+      <section class="featured">
+        <a href={`/blog/${featured.id}/`}>
+          <img src={featured.data.image} alt={featured.data.imageAlt || featured.data.title} width="1200" height="675" />
+        </a>
+        <div>
+          {featuredCat && <a class="pill" href={`/category/${featuredCat.slug}/`}>{featuredCat.name}</a>}
+          <h2><a href={`/blog/${featured.id}/`}>{featured.data.title}</a></h2>
+          <p class="muted">{featured.data.description}</p>
+          <div class="meta">Published {formatDate(featured.data.pubDate)}</div>
+          <p><a class="btn primary" href={`/blog/${featured.id}/`}>Read today's guide →</a></p>
+        </div>
+      </section>
+    )}
+
+    <AdSlot />
+
+    <section class="section">
+      <div class="section-head">
+        <h2>Latest articles</h2>
+        <a href="/blog/">View all →</a>
+      </div>
+      <div class="grid">{latest.map((post) => <PostCard post={post} />)}</div>
+    </section>
+
+    <section class="section">
+      <div class="section-head"><h2>Explore by topic</h2></div>
+      <div class="cats">
+        {CATEGORIES.map((c) => (
+          <a class="cat" href={`/category/${c.slug}/`}><strong>{c.name}</strong><span>{c.blurb}</span></a>
+        ))}
+      </div>
+    </section>
+
+    <section class="section box">
+      <h2>The student resource library</h2>
+      <p class="muted">Hand-picked official links for applications, funding, free courses, research and careers.</p>
+      <a class="btn primary" href="/resources/">Browse resources →</a>
+    </section>
+  </div>
+</Base>
